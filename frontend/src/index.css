@@ -1,6 +1,76 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --color-bg: #f8f9fc;
+  --color-surface: #ffffff;
+  --color-border: #e8eaf0;
+  --color-text-primary: #0f1117;
+  --color-text-secondary: #5a6070;
+  --color-text-muted: #9aa0b0;
+  --color-accent: #3b5bdb;
+  --color-accent-hover: #2f4ac7;
+  --color-bullish: #12a060;
+  --color-bearish: #e63946;
+  --color-neutral: #f4a200;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #c4c9d8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9aa0b0; }
+
+/* Animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 91, 219, 0.15); }
+  50%       { box-shadow: 0 0 0 8px rgba(59, 91, 219, 0); }
+}
+
+.animate-fade-in-down { animation: fadeInDown 0.4s ease both; }
+.animate-fade-in-up   { animation: fadeInUp 0.5s ease both; }
+.animate-slide-in-left { animation: slideInLeft 0.3s ease both; }
+
+/* Search dropdown */
+.search-dropdown {
+  animation: fadeInDown 0.2s ease both;
+}
+
+/* Vibe gradient bar */
+.vibe-gradient {
+  background: linear-gradient(90deg, #e63946 0%, #f4a200 35%, #f4a200 55%, #12a060 100%);
+}
+
+/* Sentiment badges */
+.badge-bullish  { background: #d3f9e2; color: #12a060; }
+.badge-bearish  { background: #fde8ea; color: #e63946; }
+.badge-neutral  { background: #fff4de; color: #f4a200; }
