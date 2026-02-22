@@ -1,8 +1,11 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { fetchStockNews } from './services/news.service.js';
 
-dotenv.config();
+// Load .env.local (falls back to .env if not found)
+dotenv.config({ path: '.env.local' });
+dotenv.config(); // fallback
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,24 +14,50 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Hello World API endpoint
-app.get('/api/hello', (req, res) => {
-  res.json({ 
+// ── Health / Hello ─────────────────────────────────────────
+app.get('/api/hello', (_req: Request, res: Response) => {
+  res.json({
     message: 'Hello World from StockVibe API!',
     status: 'success',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'healthy' });
 });
 
-// Start server
+// ── Stock News ─────────────────────────────────────────────
+// GET /api/stock/news/:ticker
+// Searches NewsAPI for "Stock: <ticker>" and returns articles
+app.get('/api/stock/news/:ticker', async (req: Request, res: Response) => {
+  const ticker = req.params.ticker as string;
+
+  if (!ticker || ticker.trim().length === 0) {
+    res.status(400).json({ error: 'Ticker symbol is required' });
+    return;
+  }
+
+  const symbol = ticker.trim().toUpperCase();
+
+  try {
+    const articles = await fetchStockNews(symbol);
+    res.json({
+      ticker: symbol,
+      count: articles.length,
+      articles,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`[news] Error fetching news for ${symbol}:`, message);
+    res.status(500).json({ error: message });
+  }
+});
+
+// ── Start ──────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`🚀 StockVibe Server running on http://localhost:${PORT}`);
   console.log(`📊 API endpoints:`);
-  console.log(`   - GET http://localhost:${PORT}/api/hello`);
   console.log(`   - GET http://localhost:${PORT}/api/health`);
+  console.log(`   - GET http://localhost:${PORT}/api/stock/news/:ticker`);
 });
