@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { fetchStockNews } from './services/news.service.js';
+import { analyzeStockVibe } from './services/ai.service.js';
 
 // Load .env.local (falls back to .env if not found)
 dotenv.config({ path: '.env.local' });
@@ -41,15 +42,23 @@ app.get('/api/stock/news/:ticker', async (req: Request, res: Response) => {
   const symbol = ticker.trim().toUpperCase();
 
   try {
+    // 1. Fetch latest news
     const articles = await fetchStockNews(symbol);
+    
+    // 2. Perform AI Vibe Check on the top 5 articles
+    const topArticles = articles.slice(0, 5);
+    const analysis = await analyzeStockVibe(symbol, topArticles);
+
+    // 3. Return combined response
     res.json({
       ticker: symbol,
       count: articles.length,
       articles,
+      analysis,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error(`[news] Error fetching news for ${symbol}:`, message);
+    console.error(`[api] Error analyzing ${symbol}:`, message);
     res.status(500).json({ error: message });
   }
 });

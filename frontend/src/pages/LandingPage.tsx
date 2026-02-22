@@ -1,13 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, BarChart2, Zap, Twitter, Github, X } from 'lucide-react';
+import { Search, BarChart2, Zap, X } from 'lucide-react';
 
-const TRENDING = [
-  { ticker: 'AAPL', change: '+2.14%', up: true },
-  { ticker: 'TSLA', change: '+1.08%', up: true },
-  { ticker: 'NVDA', change: '+5.62%', up: true },
-  { ticker: 'MSFT', change: '-0.2%', up: false },
-  { ticker: 'AMZN', change: '+0.98%', up: true },
+const SUGGESTED_STOCKS = [
+  'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'NVDA', 'AAPL'
 ];
 
 type Sentiment = 'BULLISH' | 'NEUTRAL' | 'BEARISH';
@@ -20,15 +16,15 @@ interface Suggestion {
 }
 
 const ALL_SUGGESTIONS: Suggestion[] = [
-  { ticker: 'AMZN', name: 'Amazon.com, Inc.',             sentiment: 'BULLISH', logo: '🟠' },
-  { ticker: 'AMD',  name: 'Advanced Micro Devices, Inc.', sentiment: 'NEUTRAL', logo: '⬛' },
-  { ticker: 'AMC',  name: 'AMC Entertainment Holdings',   sentiment: 'BEARISH', logo: '🔵' },
-  { ticker: 'AAPL', name: 'Apple Inc.',                   sentiment: 'BULLISH', logo: '⬛' },
-  { ticker: 'NVDA', name: 'NVIDIA Corporation',           sentiment: 'BULLISH', logo: '🟢' },
-  { ticker: 'TSLA', name: 'Tesla, Inc.',                  sentiment: 'NEUTRAL', logo: '🔴' },
-  { ticker: 'MSFT', name: 'Microsoft Corporation',        sentiment: 'BULLISH', logo: '🔷' },
-  { ticker: 'GOOGL',name: 'Alphabet Inc.',                sentiment: 'NEUTRAL', logo: '🌈' },
-  { ticker: 'META', name: 'Meta Platforms, Inc.',         sentiment: 'BULLISH', logo: '🔵' },
+  { ticker: 'RELIANCE.NS', name: 'Reliance Industries',   sentiment: 'BULLISH', logo: '🔵' },
+  { ticker: 'TCS.NS',      name: 'Tata Consultancy',      sentiment: 'NEUTRAL', logo: '⬛' },
+  { ticker: 'HDFCBANK.NS', name: 'HDFC Bank Limited',     sentiment: 'BULLISH', logo: '🔴' },
+  { ticker: 'INFY.NS',     name: 'Infosys Limited',       sentiment: 'NEUTRAL', logo: '🔵' },
+  { ticker: 'AAPL',        name: 'Apple Inc.',            sentiment: 'BULLISH', logo: '⬛' },
+  { ticker: 'NVDA',        name: 'NVIDIA Corporation',    sentiment: 'BULLISH', logo: '🟢' },
+  { ticker: 'TSLA',        name: 'Tesla, Inc.',           sentiment: 'NEUTRAL', logo: '🔴' },
+  { ticker: 'MSFT',        name: 'Microsoft Corporation', sentiment: 'BULLISH', logo: '🔷' },
+  { ticker: 'AMZN',        name: 'Amazon.com, Inc.',      sentiment: 'BULLISH', logo: '🟠' },
 ];
 
 const sentimentColors: Record<Sentiment, { bg: string; color: string }> = {
@@ -99,15 +95,6 @@ export default function LandingPage() {
             <BarChart2 style={{ width: 18, height: 18 }} />
             STOCKVIBE
           </div>
-          <div style={{ display: 'flex', gap: 28, fontSize: 13, color: '#5a6070' }}>
-            {['Documentation', 'API Access', 'Data Partners', 'Privacy'].map(l => (
-              <a key={l} href="#" style={{ textDecoration: 'none', color: 'inherit' }}>{l}</a>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 14, color: '#9aa0b0' }}>
-            <a href="#" aria-label="Twitter"><Twitter style={{ width: 16, height: 16 }} /></a>
-            <a href="#" aria-label="GitHub"><Github style={{ width: 16, height: 16 }} /></a>
-          </div>
         </div>
       </nav>
 
@@ -156,7 +143,7 @@ export default function LandingPage() {
               ref={inputRef}
               id="main-search"
               type="text"
-              placeholder="Search stocks, tickers, or news (e.g. NVDA, AAPL, Tesla)..."
+              placeholder="Search stocks (e.g. RELIANCE.NS, TCS.NS, NVDA)..."
               value={query}
               onChange={e => setQuery(e.target.value)}
               onFocus={() => setFocused(true)}
@@ -251,16 +238,16 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* ── Trending tickers ──── */}
+        {/* ── Suggested Stocks ──── */}
         <div style={{ marginTop: 40, width: '100%', maxWidth: 560 }}>
           <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9aa0b0', marginBottom: 14 }}>
-            Trending Now
+            Suggested Stocks
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
-            {TRENDING.map(t => (
+            {SUGGESTED_STOCKS.map(ticker => (
               <button
-                key={t.ticker}
-                onClick={() => navigate(`/stock/${t.ticker}`)}
+                key={ticker}
+                onClick={() => navigate(`/stock/${ticker}`)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   padding: '7px 16px', borderRadius: 999, border: '1px solid #e8eaf0',
@@ -270,8 +257,7 @@ export default function LandingPage() {
                 onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; }}
               >
-                {t.ticker}
-                <span style={{ fontSize: 11, fontWeight: 700, color: t.up ? '#12a060' : '#e63946' }}>{t.change}</span>
+                {ticker}
               </button>
             ))}
           </div>
@@ -314,13 +300,8 @@ export default function LandingPage() {
             <BarChart2 style={{ width: 16, height: 16 }} /> STOCKVIBE
           </div>
           <div style={{ display: 'flex', gap: 22, fontSize: 12, color: '#9aa0b0' }}>
-            {['Documentation', 'API Access', 'Data Partners', 'Privacy'].map(l => (
-              <a key={l} href="#" style={{ textDecoration: 'none', color: 'inherit' }}>{l}</a>
-            ))}
           </div>
           <div style={{ display: 'flex', gap: 14, color: '#9aa0b0' }}>
-            <a href="#"><Twitter style={{ width: 14, height: 14 }} /></a>
-            <a href="#"><Github style={{ width: 14, height: 14 }} /></a>
           </div>
         </div>
         <p style={{ textAlign: 'center', fontSize: 11, color: '#c4c9d8', marginTop: 14 }}>
