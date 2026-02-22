@@ -2,10 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { fetchStockNews } from './services/news.service.js';
-<<<<<<< HEAD
 import { analyzeStockVibe } from './services/ai.service.js';
-=======
->>>>>>> 03049a7 (Integrate the news api & Make it reflect in the frontend)
 
 // Load .env.local (falls back to .env if not found)
 dotenv.config({ path: '.env.local' });
@@ -45,7 +42,6 @@ app.get('/api/stock/news/:ticker', async (req: Request, res: Response) => {
   const symbol = ticker.trim().toUpperCase();
 
   try {
-<<<<<<< HEAD
     // 1. Fetch latest news
     const articles = await fetchStockNews(symbol);
     
@@ -54,25 +50,15 @@ app.get('/api/stock/news/:ticker', async (req: Request, res: Response) => {
     const analysis = await analyzeStockVibe(symbol, topArticles);
 
     // 3. Return combined response
-=======
-    const articles = await fetchStockNews(symbol);
->>>>>>> 03049a7 (Integrate the news api & Make it reflect in the frontend)
     res.json({
       ticker: symbol,
       count: articles.length,
       articles,
-<<<<<<< HEAD
       analysis,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error(`[api] Error analyzing ${symbol}:`, message);
-=======
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error(`[news] Error fetching news for ${symbol}:`, message);
->>>>>>> 03049a7 (Integrate the news api & Make it reflect in the frontend)
     res.status(500).json({ error: message });
   }
 });
