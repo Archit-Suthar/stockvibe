@@ -28,4 +28,42 @@ This project is partitioned into a separate frontend and server, designed to off
 
 ## Getting Started
 
-*(Add setup instructions here)*
+### Prerequisites
+- Node.js
+- npm 
+- Google Generative AI API Key
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Archit-Suthar/stockvibe.git
+   cd stockvibe
+   ```
+
+2. **Backend Setup**
+   ```bash
+   cd server
+   npm install
+   ```
+   Create a `.env` file in the `server` directory and add your Gemini API Key:
+   ```env
+   GEMINI_API_KEY=your_api_key_here
+   ```
+   Start the backend server:
+   ```bash
+   npm run dev
+   ```
+
+3. **Frontend Setup**
+   ```bash
+   cd ../frontend
+   npm install
+   ```
+   Start the frontend application:
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the application**
+   Open your browser and navigate to `http://localhost:5173`.
